@@ -1,10 +1,11 @@
 import React from "react";
+import DashboardLayout from "../../layouts/DashboardLayout";
 
 export default function DashboardPage() {
     return (
-        <div style={{ padding: 20 }}>
+        <DashboardLayout>
             <h1>Dashboard</h1>
-            <p>Layout com Sidebar + Navbar</p>
-        </div>
+            <p>Olá Mundo!</p>
+        </DashboardLayout>
     )
 }
