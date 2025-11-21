@@ -1,11 +1,11 @@
 import React from "react";
 import DashboardLayout from "../../layouts/DashboardLayout";
 
-export default function DashboardPage() {
+export default function SettingsPage() {
     return (
         <DashboardLayout>
-            <h1>Dashboard</h1>
-            <p>Olá Mundo!</p>
+            <h1>Configurações</h1>
+            <p>Configurações do sistema</p>
         </DashboardLayout>
     )
 }
