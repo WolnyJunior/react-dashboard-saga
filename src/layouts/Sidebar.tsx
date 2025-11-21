@@ -4,7 +4,9 @@ import DashboardIcon from "@mui/icons-material/Dashboard"
 import PeopleIcon from "@mui/icons-material/People"
 import SettingsIcon from "@mui/icons-material/Settings"
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"
-import { NavLink, replace, useNavigate } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { logout } from "../features/auth/authSlice"
 
 // Largura fica da sidebar
 
@@ -28,13 +30,12 @@ const navLinkStyle = ({ isActive }: { isActive: boolean }) => {
 export default function Sidebar() {
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     //Função de logout(ainda placeholder). No futuro, despacha ação do Redux para limpar auth
     const handleLogout = () => {
-        //Limpar tokens, redux, etc
-        //Exemplo: dispatch(authActions.logout())
-        //Por enquanto, só redireciona para /login
-        navigate("/login", { replace: true })
+        dispatch(logout())
+        navigate("/login")
     }
 
     return (
