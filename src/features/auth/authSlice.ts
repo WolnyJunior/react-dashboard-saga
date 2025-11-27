@@ -43,6 +43,7 @@ const authSlice = createSlice({
 
         //logout
         logout: () => {
+            localStorage.removeItem("app_state")
             return initialState //limpa tudo
         }
     }

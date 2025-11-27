@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { loginRequest } from "./authSlice"
 import type { RootState } from "../../store/store";
@@ -23,7 +23,11 @@ export default function LoginPage() {
     }
 
     //Quando autenticado, navega para o dashboard
-    if (isAuthenticated) navigate("/dashboard")
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate("/dashboard")
+        }
+    }, [isAuthenticated])
 
     return (
         <div style={{ padding: 20 }}>
