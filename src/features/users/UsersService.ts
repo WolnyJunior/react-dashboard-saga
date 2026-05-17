@@ -3,8 +3,18 @@
  * API FAke, temporária para testes.
  */
 
-import { api } from '../../api/api'
+// import { api } from '../../api/api'
 import type { Usuario } from './types'
+import usuarioBase from '../../data/users.json'
+
+/**
+ * Importante:
+ * - O JSON é importado apenas como base.
+ * - Clonamos ele para não alterar o arquivo original.
+ * - Isso simula como um backend retornaria dados.
+ */
+
+let usuariosFake: Usuario[] = [...usuarioBase]
 
 // Simula um pequeno atraso em qualquer requisição
 const atrasar = (ms: number) => new Promise((r) => setTimeout(r, ms))
@@ -14,34 +24,22 @@ export async function buscarUsuarios(): Promise<Usuario[]> {
     await atrasar(800) //Simula delay
 
     //Aqui troca pela API real no futuro
-    return [
-        {
-            id: 1,
-            nome: 'Sorin',
-            email: 'sorin@email.com',
-            cargo: 'admin',
-            criadoEm: '2025-03-12'
-        },
-        {
-            id: 2,
-            nome: 'Nescau',
-            email: 'nescau@email.com',
-            cargo: 'segurança',
-            criadoEm: '2025-03-12'
-        },
-        {
-            id: 3,
-            nome: 'Biguinin',
-            email: 'biguinin@email.com',
-            cargo: 'garçon',
-            criadoEm: '2025-03-12'
-        },
-        {
-            id:4,
-            nome:'Guacirinha',
-            email:'guacirinha@email.com',
-            cargo:'chef Cozinha',
-            criadoEm:'2025-03-12'
-        }
-    ]
+    return [...usuariosFake]
+}
+
+//CRIAR
+export async function criarUsuario(
+    novoUsuario: Omit<Usuario, "id" | "criadoEm">
+): Promise<Usuario> {
+    await atrasar(800)
+
+    const usuarioCriado: Usuario = {
+        id: usuariosFake.length + 1,
+        criadoEm: new Date().toISOString().split("T")[0],
+        ...novoUsuario,
+    }
+
+    usuariosFake.push(usuarioCriado)
+
+    return usuarioCriado
 }
