@@ -4,9 +4,12 @@ import {
     buscarUsuariosRequest,
     buscarUsuariosSuccess,
     buscarUsuariosFailure,
+    atualizarUsuarioRequest,
+    atualizarUsuarioSuccess,
+    atualizarUsuarioFailure
 } from './usersSlice'
 
-import { buscarUsuarios } from "./UsersService";
+import { buscarUsuarios, atualizarUsuario } from "./UsersService";
 import type { Usuario } from "./types";
 
 function* handleBuscarUsuarios(): Generator {
@@ -18,6 +21,26 @@ function* handleBuscarUsuarios(): Generator {
     }
 }
 
+function* handleAtualizarUsuario(
+    action: ReturnType<typeof atualizarUsuarioRequest>
+) {
+    try {
+        const usuarioAtualizado = (yield call(atualizarUsuario, action.payload)) as Usuario
+        yield put(atualizarUsuarioSuccess(usuarioAtualizado))
+    } catch {
+        yield put(
+            atualizarUsuarioFailure('Erro ao atualizar usuário.')
+        )
+    }
+}
+
 export function* usersSaga() {
-    yield takeLatest(buscarUsuariosRequest.type, handleBuscarUsuarios)
+    yield takeLatest(
+        buscarUsuariosRequest.type,
+        handleBuscarUsuarios
+    )
+    yield takeLatest(
+        atualizarUsuarioRequest.type,
+        handleAtualizarUsuario
+    )
 }
