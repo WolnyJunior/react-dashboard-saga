@@ -43,3 +43,23 @@ export async function criarUsuario(
 
     return usuarioCriado
 }
+
+//UPDATE
+export async function atualizarUsuario(
+    usuarioAtualizado: Usuario
+): Promise<Usuario> {
+    await atrasar(800)
+
+    /**
+     * Procuramos o índice do usuario dentro da lista.
+     */
+    const indiceUsuario = usuariosFake.findIndex(
+        (usuario) => usuario.id === usuarioAtualizado.id
+    )
+
+    //Se encontrouo usuario.
+    if(indiceUsuario>=0){
+        usuariosFake[indiceUsuario]=usuarioAtualizado
+    }
+    return usuarioAtualizado
+}

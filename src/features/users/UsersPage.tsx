@@ -4,6 +4,7 @@ import { DataGrid } from "@mui/x-data-grid"
 import type { GridColDef } from "@mui/x-data-grid"
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { buscarUsuariosRequest } from "./usersSlice";
+import DashboardLayout from "../../layouts/DashboardLayout";
 // import DashboardLayout from "../../layouts/DashboardLayout";
 
 export default function UsersPage() {
@@ -25,18 +26,20 @@ export default function UsersPage() {
         { field: 'criadoEm', headerName: 'Criado em:', width: 150 },
     ]
     return (
-        <Box sx={{ padding: 2 }}>
-            <Typography variant="h5" sx={{ mb: 2 }}>
-                Usuários
-            </Typography>
-            <Paper sx={{ height: 400 }}>
-                <DataGrid
-                    rows={usuarios}
-                    columns={colunas}
-                    loading={carregando}
-                    disableRowSelectionOnClick
-                />
-            </Paper>
-        </Box>
+        <DashboardLayout>
+            <Box sx={{ padding: 2 }}>
+                <Typography variant="h5" sx={{ mb: 2 }}>
+                    Usuários
+                </Typography>
+                <Paper sx={{ height: 400 }}>
+                    <DataGrid
+                        rows={usuarios}
+                        columns={colunas}
+                        loading={carregando}
+                        disableRowSelectionOnClick
+                    />
+                </Paper>
+            </Box>
+        </DashboardLayout>
     )
 }

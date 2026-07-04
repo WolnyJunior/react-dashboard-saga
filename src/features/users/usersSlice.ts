@@ -29,6 +29,26 @@ const UsersSlice = createSlice({
         buscarUsuariosFailure(state, action: PayloadAction<string>) {
             state.carregando = false,
                 state.erro = action.payload
+        },
+        atualizarUsuarioRequest(state, action: PayloadAction<Usuario>) {
+            state.carregando = true
+        },
+        atualizarUsuarioSuccess(state, action: PayloadAction<Usuario>) {
+            state.carregando = false
+            /**
+             * Encontrado indice do usuario atualizado
+             */
+            const indiceUsuario = state.lista.findIndex(
+                (usuario) => usuario.id === action.payload.id
+            )
+            if (indiceUsuario >= 0) {
+
+                state.lista[indiceUsuario] = action.payload
+            }
+        },
+        atualizarUsuarioFailure(state, action: PayloadAction<string>) {
+            state.carregando = false
+            state.erro = action.payload
         }
     }
 })
@@ -37,6 +57,9 @@ export const {
     buscarUsuariosRequest,
     buscarUsuariosSuccess,
     buscarUsuariosFailure,
+    atualizarUsuarioRequest,
+    atualizarUsuarioSuccess,
+    atualizarUsuarioFailure
 } = UsersSlice.actions
 
 export default UsersSlice.reducer
