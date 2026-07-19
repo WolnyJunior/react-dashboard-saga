@@ -29,13 +29,17 @@ export default function UserModal({
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [cargo, setCargo] = useState("");
+    
     function handleSalvar() {
+        
         aoSalvar({
             nome,
             email,
             cargo
         })
-        aoFechar()
+        setNome("")
+        setEmail("")
+        setCargo("")
     }
     return (
         <Dialog

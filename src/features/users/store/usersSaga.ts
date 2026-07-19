@@ -6,10 +6,13 @@ import {
     buscarUsuariosFailure,
     atualizarUsuarioRequest,
     atualizarUsuarioSuccess,
-    atualizarUsuarioFailure
+    atualizarUsuarioFailure,
+    criarUsuarioRequest,
+    criarUsuarioSuccess,
+    criarUsuarioFailure
 } from './usersSlice'
 
-import { buscarUsuarios, atualizarUsuario } from "../services/UsersService";
+import { buscarUsuarios, atualizarUsuario, criarUsuario } from "../services/usersService";
 import type { Usuario } from "../types/usuario";
 
 function* handleBuscarUsuarios(): Generator {
@@ -18,6 +21,23 @@ function* handleBuscarUsuarios(): Generator {
         yield put(buscarUsuariosSuccess(usuarios))
     } catch (erro) {
         yield put(buscarUsuariosFailure("Erro ao carregar usuários."))
+    }
+}
+
+function* handleCriarUsuario(
+    action: ReturnType<typeof criarUsuarioRequest>
+): Generator {
+    try {
+        const novoUsuario = yield call(
+            criarUsuario,
+            action.payload
+        )
+
+        yield put(criarUsuarioSuccess(novoUsuario as any))
+    } catch {
+        yield put(
+            criarUsuarioFailure("Erro ao criar usuário.")
+        )
     }
 }
 
@@ -38,6 +58,10 @@ export function* usersSaga() {
     yield takeLatest(
         buscarUsuariosRequest.type,
         handleBuscarUsuarios
+    )
+    yield takeLatest(
+        criarUsuarioRequest.type,
+        handleCriarUsuario
     )
     yield takeLatest(
         atualizarUsuarioRequest.type,

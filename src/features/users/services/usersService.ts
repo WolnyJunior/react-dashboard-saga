@@ -29,22 +29,30 @@ export async function buscarUsuarios(): Promise<Usuario[]> {
 
 //CRIAR
 export async function criarUsuario(
-    novoUsuario: Omit<Usuario, "id" | "criadoEm">
+    dados: Omit<Usuario, "id" | "criadoEm">
 ): Promise<Usuario> {
-    await atrasar(800)
 
-    const usuarioCriado: Usuario = {
-        id: usuariosFake.length + 1,
-        criadoEm: new Date().toISOString().split("T")[0],
-        ...novoUsuario,
+    //Simula um pequeno atraso na API
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    //Descobre qual maior ID existente
+    const maiorId = usuariosFake.reduce(
+        (maior, usuario) => Math.max(maior, usuario.id), 0
+    )
+
+    //Cria o novo usuário.
+    const novoUsuario: Usuario = {
+        id: maiorId + 1,
+        criadoEm: new Date().toLocaleDateString("pt-BR"),
+        ...dados,
     }
 
-    usuariosFake.push(usuarioCriado)
+    usuariosFake.push(novoUsuario)
 
-    return usuarioCriado
+    return novoUsuario
 }
 
-//UPDATE
+//aTUALIZAR
 export async function atualizarUsuario(
     usuarioAtualizado: Usuario
 ): Promise<Usuario> {
@@ -58,8 +66,8 @@ export async function atualizarUsuario(
     )
 
     //Se encontrouo usuario.
-    if(indiceUsuario>=0){
-        usuariosFake[indiceUsuario]=usuarioAtualizado
+    if (indiceUsuario >= 0) {
+        usuariosFake[indiceUsuario] = usuarioAtualizado
     }
     return usuarioAtualizado
 }

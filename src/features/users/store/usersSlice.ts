@@ -49,6 +49,34 @@ const UsersSlice = createSlice({
         atualizarUsuarioFailure(state, action: PayloadAction<string>) {
             state.carregando = false
             state.erro = action.payload
+        },
+        /**
+         * Criar usuário
+         */
+        criarUsuarioRequest: (
+            state,
+            _action: PayloadAction<{
+                nome: string
+                email: string
+                cargo: string
+            }>
+        ) => {
+            state.carregando = true
+        },
+
+        criarUsuarioSuccess: (
+            state,
+            action: PayloadAction<Usuario>
+        ) => {
+            state.carregando = false
+            state.lista.push(action.payload)
+        },
+        criarUsuarioFailure: (
+            state,
+            action: PayloadAction<string>
+        ) => {
+            state.carregando = false
+            state.erro = action.payload
         }
     }
 })
@@ -59,7 +87,10 @@ export const {
     buscarUsuariosFailure,
     atualizarUsuarioRequest,
     atualizarUsuarioSuccess,
-    atualizarUsuarioFailure
+    atualizarUsuarioFailure,
+    criarUsuarioRequest,
+    criarUsuarioSuccess,
+    criarUsuarioFailure
 } = UsersSlice.actions
 
 export default UsersSlice.reducer
