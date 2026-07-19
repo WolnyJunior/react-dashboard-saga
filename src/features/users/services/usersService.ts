@@ -71,3 +71,13 @@ export async function atualizarUsuario(
     }
     return usuarioAtualizado
 }
+
+export async function deletarUsuario(
+    id: number
+): Promise<void> {
+    await atrasar(800)
+
+    usuariosFake = usuariosFake.filter(
+        (usuario) => usuario.id !== id
+    )
+}

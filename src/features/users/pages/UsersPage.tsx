@@ -9,9 +9,10 @@ import { DataGrid } from "@mui/x-data-grid"
 import type { GridColDef } from "@mui/x-data-grid"
 import { useAppDispatch, useAppSelector } from "../../../store";
 import {
-    atualizarUsuarioRequest,
+    criarUsuarioRequest,
     buscarUsuariosRequest,
-    criarUsuarioRequest
+    atualizarUsuarioRequest,
+    deletarUsuarioRequest
 } from "../";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { UserModal } from "../"
@@ -62,6 +63,16 @@ export default function UsersPage() {
         setModalAberto(true)
     }
 
+    function handleExcluirUsuario(id: number) {
+        const confirmouExclusao = window.confirm(
+            "Deseja realmente excluir este usuário?"
+        )
+        if (!confirmouExclusao) {
+            return
+        }
+        dispatch(deletarUsuarioRequest(id))
+    }
+
     const colunas: GridColDef[] = [
         { field: 'id', headerName: 'ID', width: 90 },
         { field: 'nome', headerName: 'Nome', flex: 1 },
@@ -69,15 +80,26 @@ export default function UsersPage() {
         { field: 'cargo', headerName: 'Cargo', width: 150 },
         { field: 'criadoEm', headerName: 'Criado em', width: 150 },
         {
-            field: "acoes", headerName: "Ações", width: 140,
+            field: "acoes", headerName: "Ações", width: 220,
             renderCell: (params) => (
-                <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={() => handleEditarUsuario(params.row)}
-                >
-                    Editar
-                </Button>
+                <Box sx={{ display: "flex", gap: 1 }}>
+                    <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => handleEditarUsuario(params.row)}
+                    >
+                        Editar
+                    </Button>
+
+                    <Button
+                        variant="outlined"
+                        color="error"
+                        size="small"
+                        onClick={() => handleExcluirUsuario(params.row.id)}
+                    >
+                        Excluir
+                    </Button>
+                </Box>
             )
         }
     ]

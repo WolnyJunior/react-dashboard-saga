@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { Usuario } from "../types/usuario";
+import { listClasses } from "@mui/material";
+import { act } from "react";
 
 interface UserState {
     lista: Usuario[]
@@ -18,6 +20,20 @@ const UsersSlice = createSlice({
     name: "users",
     initialState: estadoInicial,
     reducers: {
+        criarUsuarioSuccess: (
+            state,
+            action: PayloadAction<Usuario>
+        ) => {
+            state.carregando = false
+            state.lista.push(action.payload)
+        },
+        criarUsuarioFailure: (
+            state,
+            action: PayloadAction<string>
+        ) => {
+            state.carregando = false
+            state.erro = action.payload
+        },
         buscarUsuariosRequest(state) {
             state.carregando = true
             state.erro = null
@@ -35,9 +51,9 @@ const UsersSlice = createSlice({
         },
         atualizarUsuarioSuccess(state, action: PayloadAction<Usuario>) {
             state.carregando = false
-            /**
-             * Encontrado indice do usuario atualizado
-             */
+        /**
+         * Encontrado indice do usuario atualizado
+         */
             const indiceUsuario = state.lista.findIndex(
                 (usuario) => usuario.id === action.payload.id
             )
@@ -64,14 +80,26 @@ const UsersSlice = createSlice({
             state.carregando = true
         },
 
-        criarUsuarioSuccess: (
+
+        /**
+         * Deletar Usuário
+         */
+        deletarUsuarioRequest: (
             state,
-            action: PayloadAction<Usuario>
+            _action: PayloadAction<number>
+        ) => {
+            state.carregando = true
+        },
+        deletarUsuarioSuccess: (
+            state,
+            action: PayloadAction<number>
         ) => {
             state.carregando = false
-            state.lista.push(action.payload)
+            state.lista = state.lista.filter(
+                usuario => usuario.id !== action.payload
+            )
         },
-        criarUsuarioFailure: (
+        deletarUsuarioFailure: (
             state,
             action: PayloadAction<string>
         ) => {
@@ -82,15 +110,18 @@ const UsersSlice = createSlice({
 })
 
 export const {
+    criarUsuarioRequest,
+    criarUsuarioSuccess,
+    criarUsuarioFailure,
     buscarUsuariosRequest,
     buscarUsuariosSuccess,
     buscarUsuariosFailure,
     atualizarUsuarioRequest,
     atualizarUsuarioSuccess,
     atualizarUsuarioFailure,
-    criarUsuarioRequest,
-    criarUsuarioSuccess,
-    criarUsuarioFailure
+    deletarUsuarioRequest,
+    deletarUsuarioSuccess,
+    deletarUsuarioFailure
 } = UsersSlice.actions
 
 export default UsersSlice.reducer
