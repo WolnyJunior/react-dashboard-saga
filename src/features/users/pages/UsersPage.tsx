@@ -9,19 +9,13 @@ import { DataGrid } from "@mui/x-data-grid"
 import type { GridColDef } from "@mui/x-data-grid"
 import { useAppDispatch, useAppSelector } from "../../../store";
 import {
+    atualizarUsuarioRequest,
     buscarUsuariosRequest,
-    criarUsuarioRequest,
+    criarUsuarioRequest
 } from "../";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { UserModal } from "../"
-
-const colunas: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    { field: 'nome', headerName: 'Nome', flex: 1 },
-    { field: 'email', headerName: 'E-mail', flex: 1 },
-    { field: 'cargo', headerName: 'Cargo', width: 150 },
-    { field: 'criadoEm', headerName: 'Criado em', width: 150 },
-]
+import type { Usuario } from "../types/usuario";
 
 export default function UsersPage() {
     const dispatch = useAppDispatch()
@@ -30,6 +24,10 @@ export default function UsersPage() {
 
     //Controla se o modal esta aberto ou fechado
     const [modalAberto, setModalAberto] = useState((false))
+
+    //Guarda o usuário selecionado para a edição
+    //Quando for null, significa que estamos criando um novo usuário
+    const [usuarioSelecionado, setUsuarioSelecionado] = useState<Usuario | null>(null)
 
     useEffect(() => {
         dispatch(buscarUsuariosRequest())
@@ -44,9 +42,46 @@ export default function UsersPage() {
         email: string
         cargo: string
     }) {
-        dispatch(criarUsuarioRequest(dados))
+        if (usuarioSelecionado) {
+            dispatch(
+                atualizarUsuarioRequest({
+                    ...usuarioSelecionado,
+                    ...dados
+                }))
+        } else {
+            dispatch(criarUsuarioRequest(dados))
+        }
+
         setModalAberto(false)
+        setUsuarioSelecionado(null)
     }
+
+    function handleEditarUsuario(usuario: Usuario) {
+        setUsuarioSelecionado(usuario)
+
+        setModalAberto(true)
+    }
+
+    const colunas: GridColDef[] = [
+        { field: 'id', headerName: 'ID', width: 90 },
+        { field: 'nome', headerName: 'Nome', flex: 1 },
+        { field: 'email', headerName: 'E-mail', flex: 1 },
+        { field: 'cargo', headerName: 'Cargo', width: 150 },
+        { field: 'criadoEm', headerName: 'Criado em', width: 150 },
+        {
+            field: "acoes", headerName: "Ações", width: 140,
+            renderCell: (params) => (
+                <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => handleEditarUsuario(params.row)}
+                >
+                    Editar
+                </Button>
+            )
+        }
+    ]
+
 
     return (
         <DashboardLayout>
@@ -72,10 +107,19 @@ export default function UsersPage() {
                 </Paper>
                 <UserModal
                     aberto={modalAberto}
-                    aoSalvar={handleSalvarUsuario}
-                    aoFechar={() => setModalAberto(false)}
-                >
+                    aoFechar={() => {
+                        setModalAberto(false)
 
+                        /**
+                         * Limpa o usuário selecionado
+                         * Assim, quando abrirmos novamente para cadastrar,
+                         * o formulário ficará vazio
+                        */
+                        setUsuarioSelecionado(null)
+                    }}
+                    aoSalvar={handleSalvarUsuario}
+                    usuario={usuarioSelecionado}
+                >
                 </UserModal>
             </Box>
         </DashboardLayout>
