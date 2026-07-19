@@ -1,18 +1,21 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 
 import {
+    criarUsuarioRequest,
+    criarUsuarioSuccess,
+    criarUsuarioFailure,
     buscarUsuariosRequest,
     buscarUsuariosSuccess,
     buscarUsuariosFailure,
     atualizarUsuarioRequest,
     atualizarUsuarioSuccess,
     atualizarUsuarioFailure,
-    criarUsuarioRequest,
-    criarUsuarioSuccess,
-    criarUsuarioFailure
+    deletarUsuarioRequest,
+    deletarUsuarioSuccess,
+    deletarUsuarioFailure
 } from './usersSlice'
 
-import { buscarUsuarios, atualizarUsuario, criarUsuario } from "../services/usersService";
+import { buscarUsuarios, atualizarUsuario, criarUsuario, deletarUsuario } from "../services/usersService";
 import type { Usuario } from "../types/usuario";
 
 function* handleBuscarUsuarios(): Generator {
@@ -54,17 +57,34 @@ function* handleAtualizarUsuario(
     }
 }
 
+function* handleDeletarUsuario(
+    action: ReturnType<typeof deletarUsuarioRequest>
+): Generator {
+    try {
+        yield call(deletarUsuario, action.payload)
+        yield put(deletarUsuarioSuccess(action.payload))
+    } catch {
+        yield put(
+            deletarUsuarioFailure("Erro ao excluir usuário.")
+        )
+    }
+}
+
 export function* usersSaga() {
-    yield takeLatest(
-        buscarUsuariosRequest.type,
-        handleBuscarUsuarios
-    )
     yield takeLatest(
         criarUsuarioRequest.type,
         handleCriarUsuario
     )
     yield takeLatest(
+        buscarUsuariosRequest.type,
+        handleBuscarUsuarios
+    )
+    yield takeLatest(
         atualizarUsuarioRequest.type,
         handleAtualizarUsuario
+    )
+    yield takeLatest(
+        deletarUsuarioRequest.type,
+        handleDeletarUsuario
     )
 }
