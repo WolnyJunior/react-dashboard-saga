@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     Dialog,
     DialogTitle,
@@ -8,30 +8,47 @@ import {
     TextField,
     Stack
 } from "@mui/material"
+import type { Usuario } from "../types/usuario";
 
 interface UserModalProps {
     aberto: boolean,
     aoFechar: () => void
 
     //Função chamada quando clicar em Salvar
-    aoSalvar: (dados: {
-        nome: string
-        email: string
-        cargo: string
-    }) => void
+    aoSalvar: (
+        dados: {
+            nome: string
+            email: string
+            cargo: string
+        }
+    ) => void
+    usuario?: Usuario | null
 }
 
 export default function UserModal({
     aberto,
     aoSalvar,
     aoFechar,
+    usuario
 }: UserModalProps) {
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [cargo, setCargo] = useState("");
-    
+
+    useEffect(() => {
+        if (usuario) {
+            setNome(usuario.nome)
+            setEmail(usuario.email)
+            setCargo(usuario.cargo)
+        } else {
+            setNome("")
+            setEmail("")
+            setCargo("")
+        }
+    }, [usuario])
+
     function handleSalvar() {
-        
+
         aoSalvar({
             nome,
             email,
