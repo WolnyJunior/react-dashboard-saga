@@ -9,8 +9,8 @@ import {
     atualizarUsuarioFailure
 } from './usersSlice'
 
-import { buscarUsuarios, atualizarUsuario } from "./UsersService";
-import type { Usuario } from "./types";
+import { buscarUsuarios, atualizarUsuario } from "../services/UsersService";
+import type { Usuario } from "../types/usuario";
 
 function* handleBuscarUsuarios(): Generator {
     try {

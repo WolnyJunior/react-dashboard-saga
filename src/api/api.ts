@@ -11,8 +11,8 @@
 
 // Importa o Axios, para fazer requisições HTTP
 import axios from "axios";
-import { store } from '../store/store'
-import { logout } from '../features/auth/authSlice'
+import { store } from '../store/config/store'
+import { logout } from '../features/auth/store/authSlice'
 
 //URL BASE DA API(mudar futuramente para .env)
 const URL_BASE_API = 'http://sua-api.com'

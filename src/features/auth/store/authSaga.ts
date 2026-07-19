@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from "redux-saga/effects"
+import { call, put, takeLatest } from "typed-redux-saga"
 import { loginRequest, loginSuccess, loginFailure } from "./authSlice"
 
 interface LoginResponse {
@@ -23,19 +23,29 @@ function fakeLoginApi(credentials: { email: string; password: string }): Promise
 }
 
 // Worker Saga > executa login
-function* handleLogin(action: ReturnType<typeof loginRequest>): Generator {
+function* handleLogin(
+    action: ReturnType<typeof loginRequest>
+){
     try {
         //chama a função fakeLoginApi com os dados do form
-        const user: LoginResponse = yield call(fakeLoginApi, action.payload)
+        const user = yield* call(
+            fakeLoginApi,
+            action.payload
+        )
 
         //sucesso
-        yield put(loginSuccess(user))
+        yield* put(loginSuccess(user))
+
     } catch (error) {
-        yield put(loginFailure(error as string))
+        
+        yield* put(loginFailure(error as string))
     }
 }
 
 //Watcher Saga > observa ações
 export function* authSaga(): Generator {
-    yield takeLatest(loginRequest.type, handleLogin)
+    yield* takeLatest(
+        loginRequest.type,
+        handleLogin
+    )
 }

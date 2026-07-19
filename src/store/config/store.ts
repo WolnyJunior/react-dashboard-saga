@@ -5,31 +5,32 @@ import { configureStore } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
 
 // Importa os arquivos que vão ser criados
-import rootReducer from "./rootReducer";
-import rootSaga from "./rootSaga";
-import { loadState, saveState } from "./persist";
+import rootReducer from "../reducers/rootReducer";
+import rootSaga from "../sagas/rootSaga";
+import { loadState, saveState } from "../persist/persist";
 
 // Cria o middleware do Saga
 const sagaMiddleware = createSagaMiddleware();
 
 // Carrega estado salvo
-const persistedState = loadState()
+const estadoPersistido = loadState()
 
 // Configura a store
 export const store = configureStore({
   reducer: rootReducer, // todos os reducers estarão aqui
-  preloadedState: persistedState,
-  middleware: (getDefault) =>
+  preloadedState: estadoPersistido,
+  middleware: (obterMiddelewarePadrao) =>
     // removemos o thunk e adicionamos o saga
-    getDefault({ thunk: false }).concat(sagaMiddleware),
+    obterMiddelewarePadrao({ thunk: false }).concat(sagaMiddleware),
 });
 
 // Salva automaticamente, sempre que o estado muda
-store.subscribe(() => {
+function salvarEstadoDaAplicacao() {
   saveState({
     auth: store.getState().auth
   })
-})
+}
+store.subscribe(salvarEstadoDaAplicacao)
 
 // Inicia o saga principal
 sagaMiddleware.run(rootSaga);
