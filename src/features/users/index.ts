@@ -14,7 +14,7 @@ export * from "./store/usersSlice"
  * Services
  */
 
-export * from "./services/UsersService"
+export * from "./services/usersService"
 
 /**
  * Types

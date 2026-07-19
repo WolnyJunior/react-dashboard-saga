@@ -8,7 +8,10 @@ import {
 import { DataGrid } from "@mui/x-data-grid"
 import type { GridColDef } from "@mui/x-data-grid"
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { buscarUsuariosRequest } from "../";
+import {
+    buscarUsuariosRequest,
+    criarUsuarioRequest,
+} from "../";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { UserModal } from "../"
 
@@ -32,12 +35,17 @@ export default function UsersPage() {
         dispatch(buscarUsuariosRequest())
     }, [dispatch])
 
+    /**
+     * Recebe os dados enviados pelo modal e
+       Dispara uma Action para o Redux Saga
+     */
     function handleSalvarUsuario(dados: {
         nome: string
         email: string
         cargo: string
-    }){
-        console.log(dados)
+    }) {
+        dispatch(criarUsuarioRequest(dados))
+        setModalAberto(false)
     }
 
     return (
