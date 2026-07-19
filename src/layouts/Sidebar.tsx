@@ -6,7 +6,7 @@ import SettingsIcon from "@mui/icons-material/Settings"
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"
 import { NavLink, useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
-import { logout } from "../features/auth/authSlice"
+import { logout } from "../features/auth/store/authSlice"
 
 // Largura fica da sidebar
 

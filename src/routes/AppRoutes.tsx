@@ -1,13 +1,13 @@
-import { BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 //Importa telas
-import LoginPage from "../features/auth/LoginPage";
-import DashboardPage from "../features/dashboard/DashboardPage";
+import { LoginPage } from "../features/auth";
+import { DashboardPage } from "../features/dashboard";
+import { UsersPage } from "../features/users";
+import { SettingsPage } from "../features/settings";
 import type { JSX } from "@emotion/react/jsx-runtime";
-import UsersPage from "../features/users/UsersPage";
-import SettingsPage from "../features/settings/SettingsPage";
 import { useSelector } from "react-redux";
-import type { RootState } from "../store/store";
+import type { RootState } from "../store/config/store";
 
 /** Componente que protege rotas privadas.
  *  Aqui usamos um placeholder; no futuro substitua por checagem via Redux.

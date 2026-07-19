@@ -4,8 +4,8 @@
  */
 
 // import { api } from '../../api/api'
-import type { Usuario } from './types'
-import usuarioBase from '../../data/users.json'
+import type { Usuario } from '../types/usuario'
+import usuarioBase from '../../../data/users.json'
 
 /**
  * Importante:

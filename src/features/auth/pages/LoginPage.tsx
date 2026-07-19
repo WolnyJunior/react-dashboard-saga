@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../store/hooks"
-import { loginRequest } from "./authSlice"
-import type { RootState } from "../../store/store";
+import { useAppDispatch, useAppSelector } from "../../../store"
+import { loginRequest } from "../store/authSlice"
+import type { RootState } from "../../../store/config/store";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
