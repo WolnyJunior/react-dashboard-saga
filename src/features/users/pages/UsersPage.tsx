@@ -5,6 +5,12 @@ import {
     Paper,
     Button
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit"
+import DeleteIcon from "@mui/icons-material/Delete"
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import AddIcon from "@mui/icons-material/Add"
+
 import { DataGrid } from "@mui/x-data-grid"
 import type { GridColDef } from "@mui/x-data-grid"
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -17,6 +23,9 @@ import {
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { UserModal } from "../"
 import type { Usuario } from "../types/usuario";
+import FeedbackSnackbar from "../../../components/FeedbackSnackbar";
+import ConfirmDialog from "../../../components/ConfirmDialog";
+
 
 export default function UsersPage() {
     const dispatch = useAppDispatch()
@@ -29,6 +38,18 @@ export default function UsersPage() {
     //Guarda o usuário selecionado para a edição
     //Quando for null, significa que estamos criando um novo usuário
     const [usuarioSelecionado, setUsuarioSelecionado] = useState<Usuario | null>(null)
+
+    const [snackbarAberto, setSnackbarAberto] = useState(false)
+    const [mensagemSnackbar, setMensagemSnackbar] = useState("")
+    const [tipoSnackbar, setTipoSnackbar] = useState<
+        "success" | "error" | "warning" | "info">("success")
+
+    //Controla a abertura da janela   de confirmação
+    const [confirmDialogAberto, setConfirmDialogAberto] = useState(false)
+
+    //Guarda o ID do usuário/item que será excluído
+    const [idUsuarioExcluir, setIdUsuarioExcluir] = useState<number | null>(null)
+
 
     useEffect(() => {
         dispatch(buscarUsuariosRequest())
@@ -53,8 +74,16 @@ export default function UsersPage() {
             dispatch(criarUsuarioRequest(dados))
         }
 
+        setMensagemSnackbar(
+            usuarioSelecionado
+                ? "Usuário atualizado com sucesso!"
+                : "Usuário cadastrado com sucesso!"
+        )
+        setTipoSnackbar("success")
+        setSnackbarAberto(true)
         setModalAberto(false)
         setUsuarioSelecionado(null)
+
     }
 
     function handleEditarUsuario(usuario: Usuario) {
@@ -64,13 +93,24 @@ export default function UsersPage() {
     }
 
     function handleExcluirUsuario(id: number) {
-        const confirmouExclusao = window.confirm(
-            "Deseja realmente excluir este usuário?"
-        )
-        if (!confirmouExclusao) {
+        setIdUsuarioExcluir(id)
+        setConfirmDialogAberto(true)
+    }
+
+    function confirmarExcluirUsuario() {
+
+        if (idUsuarioExcluir === null) {
             return
         }
-        dispatch(deletarUsuarioRequest(id))
+        dispatch(deletarUsuarioRequest(idUsuarioExcluir))
+
+        setMensagemSnackbar("Usuário excluído com sucesso!")
+        setTipoSnackbar("success")
+        setSnackbarAberto(true)
+
+        setConfirmDialogAberto(false)
+
+        setIdUsuarioExcluir(null)
     }
 
     const colunas: GridColDef[] = [
@@ -80,26 +120,31 @@ export default function UsersPage() {
         { field: 'cargo', headerName: 'Cargo', width: 150 },
         { field: 'criadoEm', headerName: 'Criado em', width: 150 },
         {
-            field: "acoes", headerName: "Ações", width: 220,
-            renderCell: (params) => (
-                <Box sx={{ display: "flex", gap: 1 }}>
-                    <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={() => handleEditarUsuario(params.row)}
-                    >
-                        Editar
-                    </Button>
+            field: "acoes",
+            headerName: "Ações",
+            width: 220,
 
-                    <Button
-                        variant="outlined"
-                        color="error"
-                        size="small"
-                        onClick={() => handleExcluirUsuario(params.row.id)}
-                    >
-                        Excluir
-                    </Button>
-                </Box>
+            renderCell: (params) => (
+                <Box sx={{ display: "flex" }}>
+
+                    <Tooltip title="Editar usuário">
+                        <IconButton
+                            color="primary"
+                            onClick={() => handleEditarUsuario(params.row)}
+                        >
+                            <EditIcon />
+                        </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Excluir usuário">
+                        <IconButton
+                            color="error"
+                            onClick={() => handleExcluirUsuario(params.row.id)}
+                        >
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+                </Box >
             )
         }
     ]
@@ -114,17 +159,39 @@ export default function UsersPage() {
                 <Box sx={{ mb: 2 }}>
                     <Button
                         variant="contained"
-                        onClick={() => setModalAberto(true)}
+                        startIcon={<AddIcon />}
+                        onClick={() => {
+                            setUsuarioSelecionado(null)
+                            setModalAberto(true)
+                        }}
                     >
                         Novo Usuario
                     </Button>
                 </Box>
-                <Paper sx={{ height: 400 }}>
+                <Paper
+                    elevation={3}
+                    sx={{
+                        height: 450,
+                        borderRadius: 2
+                    }}
+                >
                     <DataGrid
                         rows={usuarios}
                         columns={colunas}
                         loading={carregando}
                         disableRowSelectionOnClick
+                        pageSizeOptions={[5, 10, 20]}
+
+                        initialState={{
+                            pagination: {
+                                paginationModel: {
+                                    pageSize: 5
+                                }
+                            }
+                        }}
+                        localeText={{
+                            noRowsLabel: "Nenhum usuário encontrado",
+                        }}
                     />
                 </Paper>
                 <UserModal
@@ -141,8 +208,27 @@ export default function UsersPage() {
                     }}
                     aoSalvar={handleSalvarUsuario}
                     usuario={usuarioSelecionado}
+                    carregando={carregando}
                 >
                 </UserModal>
+                <FeedbackSnackbar
+                    aberto={snackbarAberto}
+                    mensagem={mensagemSnackbar}
+                    tipo={tipoSnackbar}
+                    aoFechar={() => setSnackbarAberto(false)}
+                >
+                </FeedbackSnackbar>
+                <ConfirmDialog
+                    aberto={confirmDialogAberto}
+                    titulo="Confirmar exclusão"
+                    mensagem="Deseja realmente excluir este usuário?"
+                    aoCancelar={() => {
+                        setConfirmDialogAberto(false)
+                        setIdUsuarioExcluir(null)
+                    }}
+                    aoConfirmar={confirmarExcluirUsuario}
+                />
+
             </Box>
         </DashboardLayout>
     )
