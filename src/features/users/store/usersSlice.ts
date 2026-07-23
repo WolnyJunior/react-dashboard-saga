@@ -1,8 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { Usuario } from "../types/usuario";
-import { listClasses } from "@mui/material";
-import { act } from "react";
 
 interface UserState {
     lista: Usuario[]
@@ -16,7 +14,7 @@ const estadoInicial: UserState = {
     erro: null
 }
 
-const UsersSlice = createSlice({
+const usersSlice = createSlice({
     name: "users",
     initialState: estadoInicial,
     reducers: {
@@ -51,9 +49,9 @@ const UsersSlice = createSlice({
         },
         atualizarUsuarioSuccess(state, action: PayloadAction<Usuario>) {
             state.carregando = false
-        /**
-         * Encontrado indice do usuario atualizado
-         */
+            /**
+             * Encontrado indice do usuario atualizado
+             */
             const indiceUsuario = state.lista.findIndex(
                 (usuario) => usuario.id === action.payload.id
             )
@@ -122,6 +120,6 @@ export const {
     deletarUsuarioRequest,
     deletarUsuarioSuccess,
     deletarUsuarioFailure
-} = UsersSlice.actions
+} = usersSlice.actions
 
-export default UsersSlice.reducer
+export default usersSlice.reducer

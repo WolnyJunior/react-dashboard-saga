@@ -12,6 +12,7 @@ import type { Usuario } from "../types/usuario";
 
 interface UserModalProps {
     aberto: boolean,
+    carregando: boolean,
     aoFechar: () => void
 
     //Função chamada quando clicar em Salvar
@@ -29,11 +30,13 @@ export default function UserModal({
     aberto,
     aoSalvar,
     aoFechar,
-    usuario
+    usuario,
+    carregando
 }: UserModalProps) {
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [cargo, setCargo] = useState("");
+    const [tentouSalvar, setTentouSalvar] = useState(false)
 
     useEffect(() => {
         if (usuario) {
@@ -47,26 +50,46 @@ export default function UserModal({
         }
     }, [usuario])
 
+    function limparFormulario() {
+        setNome("")
+        setEmail("")
+        setCargo("")
+        setTentouSalvar(false)
+    }
+
     function handleSalvar() {
+
+        setTentouSalvar(true)
+
+        if (
+            !nome.trim() ||
+            !email.trim() ||
+            !cargo.trim()
+        ) {
+            return
+        }
 
         aoSalvar({
             nome,
             email,
             cargo
         })
-        setNome("")
-        setEmail("")
-        setCargo("")
+        limparFormulario()
+    }
+
+    function handleFechar() {
+        limparFormulario()
+        aoFechar()
     }
     return (
         <Dialog
             open={aberto}
-            onClose={aoFechar}
+            onClose={handleFechar}
             fullWidth
             maxWidth="sm"
         >
             <DialogTitle>
-                Novo Usuário
+                {usuario ? "Editar Usuário" : "Novo Usuário"}
             </DialogTitle>
             <DialogContent>
                 <Stack spacing={2} sx={{ mt: 1 }}>
@@ -74,6 +97,8 @@ export default function UserModal({
                         label="Nome"
                         value={nome}
                         onChange={(e) => setNome(e.target.value)}
+                        error={tentouSalvar && !nome.trim()}
+                        helperText={tentouSalvar && !nome.trim() ? "Informe o nome." : " "}
                         fullWidth
                     >
                     </TextField>
@@ -81,6 +106,8 @@ export default function UserModal({
                         label="E-mail"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        error={tentouSalvar && !email.trim()}
+                        helperText={tentouSalvar && !email.trim() ? "Informe o e-mail." : " "}
                         fullWidth
                     >
                     </TextField>
@@ -88,6 +115,8 @@ export default function UserModal({
                         label="Cargo"
                         value={cargo}
                         onChange={(e) => setCargo(e.target.value)}
+                        error={tentouSalvar && !cargo.trim()}
+                        helperText={tentouSalvar && !cargo.trim() ? "Informe o cargo." : " "}
                         fullWidth
                     >
                     </TextField>
@@ -95,15 +124,20 @@ export default function UserModal({
             </DialogContent>
             <DialogActions>
                 <Button
-                    onClick={aoFechar}
+                    onClick={handleFechar}
                 >
                     Cancelar
                 </Button>
                 <Button
                     variant="contained"
                     onClick={handleSalvar}
+                    disabled={carregando}
                 >
-                    Salvar
+                    {carregando
+                        ? "Salvando..."
+                        : usuario
+                            ? "Atualizar"
+                            : "Cadastrar"}
                 </Button>
             </DialogActions>
         </Dialog>
