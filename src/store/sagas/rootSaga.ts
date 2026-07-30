@@ -1,15 +1,13 @@
 // Permite executar vários Sagas ao mesmo tempo
-import { all } from "redux-saga/effects";
+import { all } from "typed-redux-saga";
 import { authSaga } from "../../features/auth/store/authSaga";
 import { usersSaga } from "../../features/users/store/usersSaga";
 
 // Saga principal
 // Aqui vamos registrar todos os watchers (ex: watchLoginRequest)
-export function* rootSaga() {
-  yield all([
-    authSaga(), //registra
+export default function* rootSaga() {
+  yield* all([
+    authSaga(),
     usersSaga()
   ]);
 }
-
-export default rootSaga;

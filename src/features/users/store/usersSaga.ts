@@ -1,89 +1,130 @@
-import { call, put, takeLatest } from "redux-saga/effects";
+/**
+ * Sagas responsáveis pelos processos assíncronos
+ * relacionados ao gerenciamento de usuários.
+ */
+
+import { call, put, takeLatest } from "typed-redux-saga";
 
 import {
     criarUsuarioRequest,
     criarUsuarioSuccess,
     criarUsuarioFailure,
+
     buscarUsuariosRequest,
     buscarUsuariosSuccess,
     buscarUsuariosFailure,
+
     atualizarUsuarioRequest,
     atualizarUsuarioSuccess,
     atualizarUsuarioFailure,
+
     deletarUsuarioRequest,
     deletarUsuarioSuccess,
     deletarUsuarioFailure
 } from './usersSlice'
 
-import { buscarUsuarios, atualizarUsuario, criarUsuario, deletarUsuario } from "../services/usersService";
-import type { Usuario } from "../types/usuario";
+import {
+    buscarUsuarios,
+    atualizarUsuario,
+    criarUsuario,
+    deletarUsuario
+} from "../services/usersService";
 
-function* handleBuscarUsuarios(): Generator {
+/**
+ * Busca a lista inicial de usuários.
+ */
+function* handleBuscarUsuarios() {
     try {
-        const usuarios: Usuario[] = yield call(buscarUsuarios)
-        yield put(buscarUsuariosSuccess(usuarios))
-    } catch (erro) {
-        yield put(buscarUsuariosFailure("Erro ao carregar usuários."))
+        const usuarios = yield* call(buscarUsuarios)
+
+        yield* put(buscarUsuariosSuccess(usuarios))
+
+    } catch {
+        yield* put(
+            buscarUsuariosFailure("Erro ao carregar usuários.")
+        )
     }
 }
 
+/**
+ * Cria um usuário utilizando os dados recebidos pela action
+ */
 function* handleCriarUsuario(
     action: ReturnType<typeof criarUsuarioRequest>
-): Generator {
+) {
     try {
-        const novoUsuario = yield call(
+        const novoUsuario = yield* call(
             criarUsuario,
             action.payload
         )
 
-        yield put(criarUsuarioSuccess(novoUsuario as any))
+        yield* put(criarUsuarioSuccess(novoUsuario))
     } catch {
-        yield put(
+        yield* put(
             criarUsuarioFailure("Erro ao criar usuário.")
         )
     }
 }
 
+/**
+ * Atualiza usuário existente.
+ */
 function* handleAtualizarUsuario(
     action: ReturnType<typeof atualizarUsuarioRequest>
 ) {
     try {
-        const usuarioAtualizado = (yield call(atualizarUsuario, action.payload)) as Usuario
-        yield put(atualizarUsuarioSuccess(usuarioAtualizado))
+        const usuarioAtualizado = yield* call(
+            atualizarUsuario,
+            action.payload)
+
+        yield* put(atualizarUsuarioSuccess(usuarioAtualizado))
     } catch {
-        yield put(
+        yield* put(
             atualizarUsuarioFailure('Erro ao atualizar usuário.')
         )
     }
 }
 
+/**
+ * Exclui um usuário utilizando ID recebido pela action.
+ */
 function* handleDeletarUsuario(
     action: ReturnType<typeof deletarUsuarioRequest>
-): Generator {
+) {
     try {
-        yield call(deletarUsuario, action.payload)
-        yield put(deletarUsuarioSuccess(action.payload))
+        yield* call(
+            deletarUsuario,
+            action.payload
+        )
+        yield* put(deletarUsuarioSuccess(action.payload))
     } catch {
-        yield put(
+        yield* put(
             deletarUsuarioFailure("Erro ao excluir usuário.")
         )
     }
 }
 
+/**
+ * Watcher principal da feature de usuários
+ * 
+ * O takeLataest mantém apenas a execução mais recente
+ * de cada tipo de operação.
+ */
+
 export function* usersSaga() {
-    yield takeLatest(
+    yield* takeLatest(
         criarUsuarioRequest.type,
         handleCriarUsuario
     )
-    yield takeLatest(
+    yield* takeLatest(
         buscarUsuariosRequest.type,
         handleBuscarUsuarios
     )
-    yield takeLatest(
+    yield* takeLatest(
         atualizarUsuarioRequest.type,
         handleAtualizarUsuario
     )
-    yield takeLatest(
+    yield* takeLatest(
         deletarUsuarioRequest.type,
         handleDeletarUsuario
     )

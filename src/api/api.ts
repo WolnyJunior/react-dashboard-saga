@@ -1,5 +1,5 @@
 /**
- * Arquivo respons´´avel por criar a instância principal de comunicação com APIs.
+ * Arquivo responsável por criar a instância principal de comunicação com APIs.
  * Aqui configuramos:
  * - URL base
  * - Tempo máximo de resposta
@@ -17,7 +17,7 @@ import { logout } from '../features/auth/store/authSlice'
 //URL BASE DA API(mudar futuramente para .env)
 const URL_BASE_API = 'http://sua-api.com'
 
-//Tempo máximo para uma requisição(em milisegundos)
+//Tempo máximo para uma requisição(em milissegundos)
 const TEMPO_LIMITE_MS = 10000
 
 //Instância principal Axios
@@ -41,8 +41,8 @@ api.interceptors.request.use(
       //Quando tiver token real, troca aqui
       configuracao.headers.Authorization = 'Bearer TOKEN_EXEMPLO'
 
-      return configuracao
     }
+    return configuracao
   },
   (erro) => {
     console.error("Erro ao configurar requisição", erro)
@@ -57,7 +57,7 @@ api.interceptors.response.use(
   (erro) => {
     /**
      * caso o backend retorne 401(não autorizado)
-     * fazemos logout automarico e redirecionamos o usuário para o login
+     * fazemos logout automático e redirecionamos o usuário para o login
      */
 
     if (erro.response?.status === 401) {
