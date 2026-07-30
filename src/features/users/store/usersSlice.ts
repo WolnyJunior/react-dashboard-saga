@@ -44,8 +44,9 @@ const usersSlice = createSlice({
             state.carregando = false,
                 state.erro = action.payload
         },
-        atualizarUsuarioRequest(state, action: PayloadAction<Usuario>) {
+        atualizarUsuarioRequest(state, _action: PayloadAction<Usuario>) {
             state.carregando = true
+            state.erro = null
         },
         atualizarUsuarioSuccess(state, action: PayloadAction<Usuario>) {
             state.carregando = false

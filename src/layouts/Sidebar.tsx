@@ -1,36 +1,41 @@
-import React from "react"
-import { Box, Divider, Drawer, List, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
+import {
+    Box,
+    Divider,
+    Drawer,
+    List,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText
+} from "@mui/material"
+
 import DashboardIcon from "@mui/icons-material/Dashboard"
 import PeopleIcon from "@mui/icons-material/People"
-import SettingsIcon from "@mui/icons-material/Settings"
+import SettingsIcon from "@mui/icons-material/Settings";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"
-import { NavLink, useNavigate } from "react-router-dom"
-import { useDispatch } from "react-redux"
-import { logout } from "../features/auth/store/authSlice"
 
-// Largura fica da sidebar
+import { NavLink, useNavigate } from "react-router-dom"
+
+import { useAppDispatch } from "../store"
+import { logout } from "../features/auth/store/authSlice"
 
 const drawerWidth = 240
 
-/**
- * Função para aplicar estilos inline no NavLink dependendo do estado isActive
- * Retorna um objeto de style que o MUI ListItemButton aceitará
- */
-
-const navLinkStyle = ({ isActive }: { isActive: boolean }) => {
-    return {
-        textDecoration: "none",
-        color: "inherit",
-        display: "block",
-        width: "100%",
-        backgroundColor: isActive ? "rgba(255,255,255,0.08)" : "inherit"
+const estiloItemMenu = {
+    color: "#fff",
+    textDecoration: "none",
+    "&.active": {
+        backgroundColor: "rgba(255,255,255,0.16)"
+    },
+    "&:hover": {
+        backgroundColor: "rgba(255,255,255,0.08)"
     }
+
 }
 
 export default function Sidebar() {
 
     const navigate = useNavigate()
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
 
     //Função de logout(ainda placeholder). No futuro, despacha ação do Redux para limpar auth
     const handleLogout = () => {
@@ -47,57 +52,81 @@ export default function Sidebar() {
                 "& .MuiDrawer-paper": {
                     width: drawerWidth,
                     boxSizing: "border-box",
-                    backgroundColor: "#1e1e1e", //cor escura profissional
+                    backgroundColor: "#1e1e1e",
                     color: "#fff"
                 }
             }}
         >
-            {/** Topo da Sidebar (logo/brand) */}
-            <Box sx={{ height: 64, display: "flex", alignItems: "center", px: 2 }}>
+            <Box
+                sx={{
+                    height: 64,
+                    display: "flex",
+                    alignItems: "center",
+                    px: 2
+                }}
+            >
                 <strong>Painel</strong>
+
             </Box>
 
-            <Divider sx={{ borderColor: "rgba(255,255,255,0.08)" }} />
+            <Divider sx={{
+                borderColor: "rgba(255, 255, 255, 0.9)",
+            }}
+            />
 
-            {/* Lista de itens do menu */}
-            {/**Dashboard */}
             <List>
-                <ListItemButton component={NavLink} to="/dashboard" style={navLinkStyle as any}>
+                <ListItemButton
+                    component={NavLink}
+                    to="/dashboard"
+                    sx={estiloItemMenu}
+                >
+
                     <ListItemIcon>
-                        <DashboardIcon style={{ color: "#fff" }} />
+                        <DashboardIcon sx={{ color: "#fff" }} />
                     </ListItemIcon>
+
                     <ListItemText primary="Dashboard" />
                 </ListItemButton>
-            </List>
-            {/**Usuários */}
-            <List>
-                <ListItemButton component={NavLink} to="/users" style={navLinkStyle as any}>
+
+                <ListItemButton
+                    component={NavLink}
+                    to="/users"
+                    sx={estiloItemMenu}
+                >
                     <ListItemIcon>
-                        <DashboardIcon style={{ color: "#fff" }} />
+                        <PeopleIcon sx={{ color: "#fff" }} />
                     </ListItemIcon>
+
                     <ListItemText primary="Usuários" />
                 </ListItemButton>
-            </List>
 
-            {/**Configurações */}
-            <List>
-                <ListItemButton component={NavLink} to="/settings" style={navLinkStyle as any}>
+                <ListItemButton
+                    component={NavLink}
+                    to="/settings"
+                    sx={estiloItemMenu}
+                >
+
                     <ListItemIcon>
-                        <DashboardIcon style={{ color: "#fff" }} />
+                        <SettingsIcon sx={{ color: "#fff" }} />
                     </ListItemIcon>
+
                     <ListItemText primary="Configurações" />
                 </ListItemButton>
             </List>
 
             <Box sx={{ flexGrow: 1 }} />
+            <Divider
+                sx={{
+                    borderColor: "rgba(255,255,255,0.8)"
+                }}
+            />
 
-            {/**Logout fixado no final */}
             <Box sx={{ p: 2 }}>
                 <ListItemButton onClick={handleLogout}>
                     <ListItemIcon>
-                        <ExitToAppIcon style={{ color: "fff" }} />
+                        <ExitToAppIcon sx={{ color: "#fff" }} />
                     </ListItemIcon>
-                    <ListItemText primary="Logout" />
+                    <ListItemText primary="Sair" />
                 </ListItemButton>
             </Box>
         </Drawer>

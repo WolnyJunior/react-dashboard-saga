@@ -43,7 +43,7 @@ function* handleLogin(
 }
 
 //Watcher Saga > observa ações
-export function* authSaga(): Generator {
+export function* authSaga() {
     yield* takeLatest(
         loginRequest.type,
         handleLogin
