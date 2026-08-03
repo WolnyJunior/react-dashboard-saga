@@ -4,7 +4,7 @@ import Sidebar from "./Sidebar";
 
 // Largura da Sidebar (mesmo valor usado no arquivo Sidebar)
 
-const drawerWidth = 240
+// const drawerWidth = 240
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -19,15 +19,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Box
                 component="main"
                 sx={{
-                    flexGrow: 1, //ocupa todo o espaço
-                    padding: 3,
-                    marginLeft: `${drawerWidth}px`, //evita ficar atrás da sidebar
+                    flexGrow: 1,
+                    p: {
+                        xs: 2,
+                        sm: 3,
+                        md: 4
+                    },
+                    // marginLeft: `${drawerWidth}px`, //evita ficar atrás da sidebar
                     marginTop: "64px" //evita ficar atrás da navbar
                 }}
             >
+                <Box
+                    sx={{
+                        width: "100%",
+                        maxWidth: 1200,
+                        mx: "auto"
+                    }}
+                >
+
+                    {children}
+                </Box>
 
                 {/** Páginas(Dashboard, Usuários, ect) */}
-                {children}
             </Box>
         </Box>
     )

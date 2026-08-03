@@ -1,18 +1,23 @@
 import { useEffect, useState } from "react";
 import {
     Box,
+    Button,
+    Card,
+    CardContent,
+    Stack,
     Typography,
-    Paper,
-    Button
 } from "@mui/material";
+
 import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import AddIcon from "@mui/icons-material/Add"
 
+import { ptBR } from "@mui/x-data-grid/locales"
 import { DataGrid } from "@mui/x-data-grid"
 import type { GridColDef } from "@mui/x-data-grid"
+
 import { useAppDispatch, useAppSelector } from "../../../store";
 import {
     criarUsuarioRequest,
@@ -152,11 +157,26 @@ export default function UsersPage() {
 
     return (
         <DashboardLayout>
-            <Box sx={{ padding: 2 }}>
-                <Typography variant="h5" sx={{ mb: 2 }}>
-                    Usuários
-                </Typography>
-                <Box sx={{ mb: 2 }}>
+            <Stack spacing={3}>
+                <Box>
+                    <Typography
+                        component="h1"
+                        variant="h4"
+                        fontWeight={700}
+                    >
+                        Usuários
+                    </Typography>
+
+                    <Typography
+                        variant="body1"
+                        color="text.secondary"
+                        sx={{ mt: 0.5 }}
+                    >
+                        Gerencie os usuários cadastrados no sistema
+                    </Typography>
+                </Box>
+
+                <Box>
                     <Button
                         variant="contained"
                         startIcon={<AddIcon />}
@@ -168,32 +188,43 @@ export default function UsersPage() {
                         Novo Usuario
                     </Button>
                 </Box>
-                <Paper
-                    elevation={3}
-                    sx={{
-                        height: 450,
-                        borderRadius: 2
-                    }}
-                >
-                    <DataGrid
-                        rows={usuarios}
-                        columns={colunas}
-                        loading={carregando}
-                        disableRowSelectionOnClick
-                        pageSizeOptions={[5, 10, 20]}
 
-                        initialState={{
-                            pagination: {
-                                paginationModel: {
-                                    pageSize: 5
-                                }
+                <Card>
+                    <CardContent
+                        sx={{
+                            p: 0,
+                            "&:last-child": {
+                                pb: 0
                             }
                         }}
-                        localeText={{
-                            noRowsLabel: "Nenhum usuário encontrado",
-                        }}
-                    />
-                </Paper>
+                    >
+                        <Box sx={{ height: 450 }}>
+                            <DataGrid
+                                rows={usuarios}
+                                columns={colunas}
+                                loading={carregando}
+                                disableRowSelectionOnClick
+                                pageSizeOptions={[5, 10, 20]}
+
+                                initialState={{
+                                    pagination: {
+                                        paginationModel: {
+                                            pageSize: 5
+                                        }
+                                    }
+                                }}
+                                localeText={{
+                                    ...ptBR.components.MuiDataGrid.defaultProps.localeText,
+                                    noRowsLabel: "Nenhum usuário encontrado"
+                                }}
+                                sx={{
+                                    border: 0
+                                }}
+                            />
+                        </Box>
+                    </CardContent>
+                </Card>
+
                 <UserModal
                     aberto={modalAberto}
                     aoFechar={() => {
@@ -209,15 +240,15 @@ export default function UsersPage() {
                     aoSalvar={handleSalvarUsuario}
                     usuario={usuarioSelecionado}
                     carregando={carregando}
-                >
-                </UserModal>
+                />
+
                 <FeedbackSnackbar
                     aberto={snackbarAberto}
                     mensagem={mensagemSnackbar}
                     tipo={tipoSnackbar}
                     aoFechar={() => setSnackbarAberto(false)}
-                >
-                </FeedbackSnackbar>
+                />
+
                 <ConfirmDialog
                     aberto={confirmDialogAberto}
                     titulo="Confirmar exclusão"
@@ -228,8 +259,7 @@ export default function UsersPage() {
                     }}
                     aoConfirmar={confirmarExcluirUsuario}
                 />
-
-            </Box>
+            </Stack>
         </DashboardLayout>
     )
 }
